@@ -4,7 +4,11 @@ const id = uuidv4();
 
 console.log("Log output started");
 
-setInterval(() => {
+function log() {
   const timestamp = new Date().toISOString();
   console.log(`${timestamp}: ${id}`);
-}, 5000);
+}
+
+log(); // print immediately
+
+setInterval(log, 5000);
