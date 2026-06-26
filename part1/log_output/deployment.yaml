@@ -13,6 +13,6 @@ spec:
         app: log-output
     spec:
       containers:
-  - name: log-output
-    image: log-output:latest
-    imagePullPolicy: Never
+        - name: log-output
+          image: log-output:latest
+          imagePullPolicy: Never
