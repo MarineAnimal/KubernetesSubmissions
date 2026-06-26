@@ -9,6 +9,6 @@ function log() {
   console.log(`${timestamp}: ${id}`);
 }
 
-log(); // print immediately
+log();
 
 setInterval(log, 5000);
