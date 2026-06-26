@@ -15,4 +15,4 @@ spec:
       containers:
         - name: log-output
           image: log-output:v4
-          imagePullPolicy: Never
+          
