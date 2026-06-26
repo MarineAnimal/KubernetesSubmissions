@@ -1,6 +1,6 @@
-const { v4: uuidv4 } = require("uuid");
+const { randomUUID } = require("crypto");
 
-const id = uuidv4();
+const id = randomUUID();
 
 console.log("Log output started");
 
@@ -10,5 +10,4 @@ function log() {
 }
 
 log();
-
 setInterval(log, 5000);
