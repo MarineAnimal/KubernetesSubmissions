@@ -2,10 +2,15 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-COPY src/package.json .
+COPY package.json .
 RUN npm install
 
-COPY src .
+COPY writer.js .
+COPY reader.js .
 
 EXPOSE 3000
+
+
+
+
 CMD ["node", "reader.js"]
