@@ -1,15 +1,14 @@
-const express = require("express");
-const app = express();
+const express = require("express")
+const app = express()
 
-const PORT = process.env.PORT || 3000;
+let count = 0
 
-let counter = 0;
+app.get("/pingpong", function (req, res) {
+  count = count + 1
+  res.send("pong " + count)
+})
 
-app.get("/pingpong", (req, res) => {
-  counter++;
-  res.send(`pong ${counter}`);
-});
-
-app.listen(PORT, () => {
-  console.log(`Pingpong app started on port ${PORT}`);
-});
+const port = 3000
+app.listen(port, () => {
+  console.log("server running on port " + port)
+})
