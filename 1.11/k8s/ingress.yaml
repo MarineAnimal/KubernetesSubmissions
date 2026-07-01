@@ -3,22 +3,22 @@ kind: Ingress
 metadata:
   name: shared-ingress
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/use-regex: "true"
 spec:
   ingressClassName: nginx
   rules:
   - http:
       paths:
-      - path: /log
-        pathType: Prefix
+      - path: /log(/|$)(.*)
+        pathType: ImplementationSpecific
         backend:
           service:
             name: log-output-svc
             port:
               number: 80
 
-      - path: /pingpong
-        pathType: Prefix
+      - path: /pingpong(/|$)(.*)
+        pathType: ImplementationSpecific
         backend:
           service:
             name: pingpong-svc
