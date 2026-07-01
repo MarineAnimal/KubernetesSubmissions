@@ -15,7 +15,6 @@ spec:
       volumes:
         - name: shared-data
           emptyDir: {}
-
       containers:
         - name: writer
           image: log-output:1.0
