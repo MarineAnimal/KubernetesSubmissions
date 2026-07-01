@@ -7,20 +7,20 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - http:
-        paths:
-          - path: /pingpong
-            pathType: Prefix
-            backend:
-              service:
-                name: pingpong-svc
-                port:
-                  number: 80
+  - http:
+      paths:
+      - path: /log
+        pathType: Prefix
+        backend:
+          service:
+            name: log-output-svc
+            port:
+              number: 80
 
-          - path: /log
-            pathType: Prefix
-            backend:
-              service:
-                name: log-output-svc
-                port:
-                  number: 80
+      - path: /pingpong
+        pathType: Prefix
+        backend:
+          service:
+            name: pingpong-svc
+            port:
+              number: 80
