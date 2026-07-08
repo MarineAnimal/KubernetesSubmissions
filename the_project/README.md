@@ -1,5 +1,12 @@
 # The Project
 
+## Exercise releases
+
+- [3.7](https://github.com/MarineAnimal/KubernetesSubmissions/releases/tag/3.7) — the_project
+- [3.8](https://github.com/MarineAnimal/KubernetesSubmissions/releases/tag/3.8) — the_project
+- [3.9](https://github.com/MarineAnimal/KubernetesSubmissions/releases/tag/3.9) — the_project
+- [3.10](https://github.com/MarineAnimal/KubernetesSubmissions/releases/tag/3.10) — the_project
+
 ## 3.9 DBaaS vs DIY
 
 When deplying a database on kubernetes, there are two main options. This is a comparison of two approaches to running a database for this project on GKE. A managed **Database as a Service**(DBaas for short), like Google cloud SQL vs a self-hosted, DIY database running as a Kubernetes workload (e.g. a PostgreSQL Deployment/StatefulSet backed by a PersistentVolumeClaim, similar to how this project already runs its image cache).
