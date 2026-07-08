@@ -16,4 +16,4 @@ resources:
 images:
   - name: PROJECT/IMAGE
     newName: europe-north1-docker.pkg.dev/dwk-gke-501611/dwk-gke/todo-app
-    newTag: "1.0"
+    newTag: "1.2"

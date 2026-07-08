@@ -8,8 +8,6 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.urlencoded({ extended: true }));
 
-// Where the cached image lives. This path must match the volumeMount
-// path in deployment.yaml, otherwise it won't survive restarts.
 const DATA_DIR = "/usr/src/app/files";
 const IMAGE_PATH = path.join(DATA_DIR, "image.jpg");
 const TEN_MINUTES = 10 * 60 * 1000;
@@ -32,6 +30,7 @@ async function ensureFreshImage() {
   if (fs.existsSync(IMAGE_PATH)) {
     const stats = fs.statSync(IMAGE_PATH);
     const ageMs = Date.now() - stats.mtimeMs;
+
     if (ageMs < TEN_MINUTES) {
       needsFetch = false;
     }
@@ -44,7 +43,10 @@ async function ensureFreshImage() {
       fs.writeFileSync(IMAGE_PATH, buffer);
       console.log(`${new Date().toISOString()}: fetched a new image`);
     } catch (err) {
-      console.error("Failed to fetch a new image, keeping the old one if present:", err.message);
+      console.error(
+        "Failed to fetch a new image, keeping the old one if present:",
+        err.message
+      );
     }
   }
 }
@@ -68,7 +70,7 @@ function renderPage(todos) {
       </form>
 
       <ul>
-        ${todos.map(t => `<li>${t}</li>`).join("")}
+        ${todos.map((t) => `<li>${t}</li>`).join("")}
       </ul>
 
       <p>DevOps with Kubernetes 2025</p>
@@ -79,6 +81,7 @@ function renderPage(todos) {
 
 async function waitForDb() {
   let attempt = 0;
+
   while (attempt < 10) {
     try {
       await pool.query("SELECT 1");
@@ -89,6 +92,7 @@ async function waitForDb() {
       await new Promise((resolve) => setTimeout(resolve, 5000));
     }
   }
+
   throw new Error("Unable to connect to Postgres after several attempts");
 }
 
@@ -136,6 +140,7 @@ app.post("/add", async (req, res) => {
   if (todo && todo.trim().length > 0 && todo.length <= 140) {
     try {
       await addTodoToDb(todo.trim());
+      console.log(`New todo created: ${todo.trim()}`);
     } catch (err) {
       console.error("Failed to save todo:", err.message);
     }
@@ -147,6 +152,7 @@ app.post("/add", async (req, res) => {
 async function start() {
   await waitForDb();
   await ensureTable();
+
   app.listen(PORT, () => {
     console.log(`Server started in port ${PORT}`);
   });
