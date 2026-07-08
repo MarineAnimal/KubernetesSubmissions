@@ -43,11 +43,11 @@ spec:
                   key: POSTGRES_PASSWORD
           resources:
             requests:
-              cpu: 1m
-              memory: 16Mi
+              cpu: 10m
+              memory: 64Mi
             limits:
-              cpu: 2m
-              memory: 32Mi
+              cpu: 100m
+              memory: 256Mi
           volumeMounts:
             - name: image-storage
               mountPath: /usr/src/app/files
