@@ -41,6 +41,13 @@ spec:
                 secretKeyRef:
                   name: todo-db-secret
                   key: POSTGRES_PASSWORD
+          resources:
+            requests:
+              cpu: 1m
+              memory: 16Mi
+            limits:
+              cpu: 2m
+              memory: 32Mi
           volumeMounts:
             - name: image-storage
               mountPath: /usr/src/app/files
