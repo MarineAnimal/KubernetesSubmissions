@@ -1,6 +1,7 @@
 const express = require("express");
 const fs = require("fs");
 const path = require("path");
+const { Pool } = require("pg");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -17,16 +18,14 @@ if (!fs.existsSync(DATA_DIR)) {
   fs.mkdirSync(DATA_DIR, { recursive: true });
 }
 
-let todos = [
-  "Learn JavaScript",
-  "Learn React",
-  "Build a project"
-];
+const pool = new Pool({
+  host: process.env.POSTGRES_HOST || "todo-postgres",
+  port: Number(process.env.POSTGRES_PORT || 5432),
+  user: process.env.POSTGRES_USER,
+  password: process.env.POSTGRES_PASSWORD,
+  database: process.env.POSTGRES_DB || "todo",
+});
 
-// Fetches a new image from picsum only if we don't have one yet,
-// or the one we have is older than 10 minutes. Using the file's
-// own mtime (instead of an in-memory timestamp) means this survives
-// container restarts/crashes, as required by 1.12.
 async function ensureFreshImage() {
   let needsFetch = true;
 
@@ -45,14 +44,12 @@ async function ensureFreshImage() {
       fs.writeFileSync(IMAGE_PATH, buffer);
       console.log(`${new Date().toISOString()}: fetched a new image`);
     } catch (err) {
-      // If the fetch fails (e.g. no internet from the cluster right now),
-      // keep serving whatever we already have cached, if anything.
       console.error("Failed to fetch a new image, keeping the old one if present:", err.message);
     }
   }
 }
 
-function renderPage() {
+function renderPage(todos) {
   return `
   <html>
     <body>
@@ -80,8 +77,47 @@ function renderPage() {
   `;
 }
 
-app.get("/", (req, res) => {
-  res.send(renderPage());
+async function waitForDb() {
+  let attempt = 0;
+  while (attempt < 10) {
+    try {
+      await pool.query("SELECT 1");
+      return;
+    } catch (err) {
+      attempt += 1;
+      console.error(`Postgres not ready (attempt ${attempt}):`, err.message);
+      await new Promise((resolve) => setTimeout(resolve, 5000));
+    }
+  }
+  throw new Error("Unable to connect to Postgres after several attempts");
+}
+
+async function ensureTable() {
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS todos (
+      id SERIAL PRIMARY KEY,
+      text VARCHAR(140) NOT NULL
+    )
+  `);
+}
+
+async function getTodos() {
+  const result = await pool.query("SELECT text FROM todos ORDER BY id");
+  return result.rows.map((row) => row.text);
+}
+
+async function addTodoToDb(todo) {
+  await pool.query("INSERT INTO todos (text) VALUES ($1)", [todo]);
+}
+
+app.get("/", async (req, res) => {
+  try {
+    const todos = await getTodos();
+    res.send(renderPage(todos));
+  } catch (err) {
+    console.error("Failed to fetch todos:", err.message);
+    res.status(500).send("Failed to load todos");
+  }
 });
 
 app.get("/image", async (req, res) => {
@@ -94,16 +130,29 @@ app.get("/image", async (req, res) => {
   }
 });
 
-app.post("/add", (req, res) => {
+app.post("/add", async (req, res) => {
   const todo = req.body.todo;
 
   if (todo && todo.trim().length > 0 && todo.length <= 140) {
-    todos.push(todo.trim());
+    try {
+      await addTodoToDb(todo.trim());
+    } catch (err) {
+      console.error("Failed to save todo:", err.message);
+    }
   }
 
   res.redirect("/");
 });
 
-app.listen(PORT, () => {
-  console.log(`Server started in port ${PORT}`);
+async function start() {
+  await waitForDb();
+  await ensureTable();
+  app.listen(PORT, () => {
+    console.log(`Server started in port ${PORT}`);
+  });
+}
+
+start().catch((err) => {
+  console.error("Failed to start application:", err.message);
+  process.exit(1);
 });
