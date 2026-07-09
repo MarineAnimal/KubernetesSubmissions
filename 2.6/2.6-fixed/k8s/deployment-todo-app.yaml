@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo-app
+  namespace: project
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: todo-app
+  template:
+    metadata:
+      labels:
+        app: todo-app
+    spec:
+      containers:
+        - name: todo-app
+          image: todo-app:1.0
+          ports:
+            - containerPort: 3000
+          envFrom:
+            - configMapRef:
+                name: project-config
+          volumeMounts:
+            - name: image-storage
+              mountPath: /usr/src/app/files
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+      volumes:
+        - name: image-storage
+          persistentVolumeClaim:
+            claimName: project-image-pvc
