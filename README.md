@@ -14,7 +14,7 @@
 - [2.1.](https://github.com/MarineAnimal/KubernetesSubmissions/tree/main/2.1)
 - [2.2.](https://github.com/MarineAnimal/KubernetesSubmissions/tree/main/2.2)
 - [2.3.](https://github.com/MarineAnimal/KubernetesSubmissions/tree/main/2.3)
-- [2.4.](https://github.com/MarineAnimal/KubernetesSubmissions/tree/main/2.4)
+- [2.4.](https://github.com/MarineAnimal/KubernetesSubmissions/tree/main/2.3)
 - [2.5.](https://github.com/MarineAnimal/KubernetesSubmissions/tree/main/2.5)
 - [2.6.](https://github.com/MarineAnimal/KubernetesSubmissions/tree/main/2.6)
 - [2.7.](https://github.com/MarineAnimal/KubernetesSubmissions/tree/main/2.7)
