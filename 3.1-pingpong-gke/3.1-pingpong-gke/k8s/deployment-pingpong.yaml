@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pingpong
+  namespace: exercises
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pingpong
+  template:
+    metadata:
+      labels:
+        app: pingpong
+    spec:
+      containers:
+        - name: pingpong
+          # Replace REGION and PROJECT_ID below (see README.md) before applying.
+          image: REGION-docker.pkg.dev/PROJECT_ID/dwk-gke/pingpong:1.0
+          ports:
+            - containerPort: 3000
