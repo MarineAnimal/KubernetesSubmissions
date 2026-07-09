@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pingpong-dep
+  namespace: exercises
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pingpong
+  template:
+    metadata:
+      labels:
+        app: pingpong
+    spec:
+      containers:
+        - name: pingpong
+          image: europe-north1-docker.pkg.dev/dwk-gke-501611/dwk-gke/pingpong:1.3
+          ports:
+            - containerPort: 3000
+          env:
+            - name: POSTGRES_HOST
+              value: pingpong-postgres
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: pingpong-db-secret
+                  key: POSTGRES_DB
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: pingpong-db-secret
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pingpong-db-secret
+                  key: POSTGRES_PASSWORD
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 3000
+            initialDelaySeconds: 2
+            periodSeconds: 5
+            failureThreshold: 3

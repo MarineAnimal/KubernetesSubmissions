@@ -73,7 +73,7 @@ function renderPage(todos) {
         ${todos.map((t) => `<li>${t}</li>`).join("")}
       </ul>
 
-      <p>DevOps with Kubernetes 2025</p>
+      <p>DevOps with Kubernetes 2026</p>
     </body>
   </html>
   `;
