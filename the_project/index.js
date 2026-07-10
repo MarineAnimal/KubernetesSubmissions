@@ -180,12 +180,12 @@ app.post("/add", async (req, res) => {
 });
 
 async function start() {
-  await waitForDb();
-  await ensureTable();
-
   app.listen(PORT, () => {
     console.log(`Server started in port ${PORT}`);
   });
+
+  await waitForDb();
+  await ensureTable();
 }
 
 start().catch((err) => {
