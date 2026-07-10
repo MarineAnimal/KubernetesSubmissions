@@ -1,0 +1,56 @@
+diff --git a/k8s/analysistemplate-pingpong.yaml b/k8s/analysistemplate-pingpong.yaml
+new file mode 100644
+index 0000000..a60b7b6
+--- /dev/null
++++ b/k8s/analysistemplate-pingpong.yaml
+@@ -0,0 +1,23 @@
++apiVersion: argoproj.io/v1alpha1
++kind: AnalysisTemplate
++metadata:
++  name: pingpong-cpu-analysis
++  namespace: exercises
++spec:
++  metrics:
++    - name: namespace-cpu-rate-sum
++      # Measure every 30s for 5 minutes (10 x 30s).
++      interval: 30s
++      count: 10
++      # Any single breach fails the analysis and reverts the update.
++      failureLimit: 0
++      # Hardcoded threshold in cores for the summed CPU usage rate of
++      # all containers in the namespace. Setting this too low will make
++      # the analysis fail and prevent the update from ever completing.
++      failureCondition: result[0] > 0.5
++      successCondition: result[0] <= 0.5
++      provider:
++        prometheus:
++          address: http://kube-prometheus-stack-prometheus.prometheus.svc.cluster.local:9090
++          query: |
++            sum(rate(container_cpu_usage_seconds_total{namespace="exercises", container!=""}[1m]))
+diff --git a/k8s/deployment-pingpong.yaml b/k8s/deployment-pingpong.yaml
+index ff0b3ea..466104f 100644
+--- a/k8s/deployment-pingpong.yaml
++++ b/k8s/deployment-pingpong.yaml
+@@ -1,5 +1,5 @@
+-apiVersion: apps/v1
+-kind: Deployment
++apiVersion: argoproj.io/v1alpha1
++kind: Rollout
+ metadata:
+   name: pingpong-dep
+   namespace: exercises
+@@ -8,6 +8,14 @@ spec:
+   selector:
+     matchLabels:
+       app: pingpong
++  strategy:
++    canary:
++      steps:
++        - setWeight: 50
++        - analysis:
++            templates:
++              - templateName: pingpong-cpu-analysis
++        - setWeight: 100
+   template:
+     metadata:
+       labels:

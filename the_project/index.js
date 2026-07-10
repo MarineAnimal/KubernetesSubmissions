@@ -7,6 +7,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 // Toggled false by POST /break. The health check reports unhealthy once
 // this is false, regardless of DB state, so a liveness probe hitting
@@ -75,7 +76,24 @@ function renderPage(todos) {
       </form>
 
       <ul>
-        ${todos.map((t) => `<li>${t}</li>`).join("")}
+        ${todos
+          .map(
+            (t) => `<li>
+              <label style="text-decoration: ${t.done ? "line-through" : "none"};">
+                <input
+                  type="checkbox"
+                  ${t.done ? "checked" : ""}
+                  onchange="fetch('/todos/${t.id}', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ done: this.checked })
+                  }).then(() => location.reload())"
+                />
+                ${t.text}
+              </label>
+            </li>`
+          )
+          .join("")}
       </ul>
 
       <form method="POST" action="/break" style="margin-top: 20px;">
@@ -109,18 +127,33 @@ async function ensureTable() {
   await pool.query(`
     CREATE TABLE IF NOT EXISTS todos (
       id SERIAL PRIMARY KEY,
-      text VARCHAR(140) NOT NULL
+      text VARCHAR(140) NOT NULL,
+      done BOOLEAN NOT NULL DEFAULT FALSE
     )
+  `);
+
+  await pool.query(`
+    ALTER TABLE todos ADD COLUMN IF NOT EXISTS done BOOLEAN NOT NULL DEFAULT FALSE
   `);
 }
 
 async function getTodos() {
-  const result = await pool.query("SELECT text FROM todos ORDER BY id");
-  return result.rows.map((row) => row.text);
+  const result = await pool.query(
+    "SELECT id, text, done FROM todos ORDER BY id"
+  );
+  return result.rows;
 }
 
 async function addTodoToDb(todo) {
   await pool.query("INSERT INTO todos (text) VALUES ($1)", [todo]);
+}
+
+async function setTodoDone(id, done) {
+  const result = await pool.query(
+    "UPDATE todos SET done = $1 WHERE id = $2 RETURNING id, text, done",
+    [done, id]
+  );
+  return result.rows[0];
 }
 
 app.get("/", async (req, res) => {
@@ -177,6 +210,28 @@ app.post("/add", async (req, res) => {
   }
 
   res.redirect("/");
+});
+
+app.put("/todos/:id", async (req, res) => {
+  const { id } = req.params;
+  const { done } = req.body;
+
+  if (typeof done !== "boolean") {
+    return res.status(400).json({ error: "'done' must be a boolean" });
+  }
+
+  try {
+    const updated = await setTodoDone(id, done);
+
+    if (!updated) {
+      return res.status(404).json({ error: "Todo not found" });
+    }
+
+    res.status(200).json(updated);
+  } catch (err) {
+    console.error("Failed to update todo:", err.message);
+    res.status(500).json({ error: "Failed to update todo" });
+  }
 });
 
 async function start() {
