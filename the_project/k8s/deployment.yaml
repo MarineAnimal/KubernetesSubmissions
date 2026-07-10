@@ -53,10 +53,17 @@ spec:
               mountPath: /usr/src/app/files
           readinessProbe:
             httpGet:
-              path: /
+              path: /healthz
               port: 3000
             initialDelaySeconds: 5
             periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            failureThreshold: 3
       volumes:
         - name: image-storage
           persistentVolumeClaim:

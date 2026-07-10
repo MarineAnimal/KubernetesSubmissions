@@ -8,6 +8,11 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.urlencoded({ extended: true }));
 
+// Toggled false by POST /break. The health check reports unhealthy once
+// this is false, regardless of DB state, so a liveness probe hitting
+// /healthz will eventually restart the container and reset this to true.
+let isHealthy = true;
+
 const DATA_DIR = "/usr/src/app/files";
 const IMAGE_PATH = path.join(DATA_DIR, "image.jpg");
 const TEN_MINUTES = 10 * 60 * 1000;
@@ -73,6 +78,10 @@ function renderPage(todos) {
         ${todos.map((t) => `<li>${t}</li>`).join("")}
       </ul>
 
+      <form method="POST" action="/break" style="margin-top: 20px;">
+        <button type="submit" style="background: #c0392b; color: white;">Break the app</button>
+      </form>
+
       <p>DevOps with Kubernetes 2026</p>
     </body>
   </html>
@@ -122,6 +131,27 @@ app.get("/", async (req, res) => {
     console.error("Failed to fetch todos:", err.message);
     res.status(500).send("Failed to load todos");
   }
+});
+
+app.get("/healthz", async (req, res) => {
+  if (!isHealthy) {
+    return res.status(500).json({ status: "unhealthy" });
+  }
+
+  try {
+    await pool.query("SELECT 1");
+    return res.status(200).json({ status: "ok" });
+  } catch (err) {
+    return res
+      .status(500)
+      .json({ status: "unhealthy", reason: "database unreachable" });
+  }
+});
+
+app.post("/break", (req, res) => {
+  isHealthy = false;
+  console.log("App manually broken via /break");
+  res.redirect("/");
 });
 
 app.get("/image", async (req, res) => {
