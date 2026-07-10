@@ -20,6 +20,10 @@ spec:
     metadata:
       labels:
         app: pingpong
+      annotations:
+        # Bump this value ("1" -> "2" -> "3" etc.) to trigger a new rollout. This is useful when you want to trigger a rollout without changing the image or other spec fields.
+        # new revision
+        update-trigger: "5"
     spec:
       containers:
         - name: pingpong

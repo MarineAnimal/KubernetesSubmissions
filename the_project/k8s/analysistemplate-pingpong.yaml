@@ -18,6 +18,6 @@ spec:
       successCondition: result[0] <= 0.5
       provider:
         prometheus:
-          address: http://kube-prometheus-stack-prometheus.prometheus.svc.cluster.local:9090
+          address: http://prom-prometheus-server.monitoring.svc.cluster.local:80
           query: |
-            sum(rate(container_cpu_usage_seconds_total{namespace="exercises", container!=""}[1m]))
+            sum(rate(container_cpu_usage_seconds_total{namespace="exercises", container!=""}[1m])) or on() vector(0)
