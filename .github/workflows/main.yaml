@@ -34,31 +34,32 @@ jobs:
           workload_identity_provider: '${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}'
           service_account: '${{ secrets.SERVICE_ACCOUNT }}'
 
-      - name: 'Set up Cloud SDK'
+      - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v3
 
-      - name: 'Use gcloud CLI'
+      - name: Use gcloud CLI
         run: gcloud info
 
-      - name: 'Get GKE credentials'
-        uses: 'google-github-actions/get-gke-credentials@v3'
+      - name: Get GKE credentials
+        uses: google-github-actions/get-gke-credentials@v3
         with:
           cluster_name: '${{ env.GKE_CLUSTER }}'
           project_id: '${{ env.PROJECT_ID }}'
           location: '${{ env.GKE_ZONE }}'
 
-      - name: 'Configure Docker auth'
+      - name: Configure Docker auth
         run: gcloud --quiet auth configure-docker "$REGISTRY"
 
-      - name: 'Form the image name'
+      - name: Form the image name
         run: echo "IMAGE_TAG=$REGISTRY/$PROJECT_ID/$REPOSITORY/$IMAGE:$BRANCH-$GITHUB_SHA" >> $GITHUB_ENV
 
-      - name: 'Determine namespace'
-        run: |-
+      - name: Determine namespace
+        run: |
           if [ "$BRANCH" = "main" ]; then
             echo "NAMESPACE=project" >> $GITHUB_ENV
           else
-            echo "NAMESPACE=$BRANCH" >> $GITHUB_ENV
+            SAFE_NAMESPACE=$(echo "$BRANCH" | tr '.' '-')
+            echo "NAMESPACE=$SAFE_NAMESPACE" >> $GITHUB_ENV
           fi
 
       - name: Build
@@ -71,11 +72,11 @@ jobs:
         uses: imranismail/setup-kustomize@v3
 
       - name: Deploy
-        run: |-
-          kubectl create namespace $NAMESPACE || true
-          kubectl config set-context --current --namespace=$NAMESPACE
-          kustomize edit set namespace $NAMESPACE
+        run: |
+          kubectl create namespace "$NAMESPACE" || true
+          kubectl config set-context --current --namespace="$NAMESPACE"
+          kustomize edit set namespace "$NAMESPACE"
           kustomize edit set image PROJECT/IMAGE=$IMAGE_TAG
           kustomize build . | kubectl apply -f -
-          kubectl rollout status deployment $SERVICE -n $NAMESPACE
-          kubectl get services -n $NAMESPACE -o wide
+          kubectl rollout status deployment $SERVICE -n "$NAMESPACE"
+          kubectl get services -n "$NAMESPACE" -o wide
