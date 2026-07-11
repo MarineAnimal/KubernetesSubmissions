@@ -3,22 +3,34 @@ name: Build and publish log-output
 on:
   push:
     branches: [main]
-    tags-ignore:
-      - '**'
-    paths:
-      - 'the_project/log-output/**'
-      - 'the_project/k8s/deployment-log-output.yaml'
-      - '.github/workflows/log-output.yaml'
+    tags: ['**']
 
 jobs:
-  build-publish:
-    name: Build, Push, Release
+  changes:
+    if: github.ref_type == 'branch'
+    runs-on: ubuntu-latest
+    outputs:
+      app: ${{ steps.filter.outputs.app }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            app:
+              - 'the_project/log-output/**'
+              - 'the_project/k8s/deployment-log-output.yaml'
+              - '.github/workflows/log-output.yaml'
+
+  deploy-staging:
+    needs: changes
+    if: github.ref_type == 'branch' && needs.changes.outputs.app == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
         with:
           ref: main
 
@@ -37,13 +49,53 @@ jobs:
       - name: Set up Kustomize
         uses: imranismail/setup-kustomize@v3
 
-      - name: Use right image
-        working-directory: the_project
+      - name: Update staging image tag
+        working-directory: the_project/overlays/staging
         run: kustomize edit set image PROJECT/LOGOUTPUT=anyasnif/log-output:$GITHUB_SHA
 
-      - name: commit kustomization.yaml to GitHub
+      - name: Commit and push updated manifest
         uses: EndBug/add-and-commit@v10
         with:
-          add: 'the_project/kustomization.yaml'
-          message: New log-output version released ${{ github.sha }}
+          add: 'the_project/overlays/staging/kustomization.yaml'
+          message: 'Deploy log-output ${{ github.sha }} to staging'
+          pull: '--rebase --autostash'
+
+  deploy-production:
+    if: github.ref_type == 'tag'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout tagged commit
+        uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v4
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and publish log-output
+        working-directory: the_project/log-output
+        run: |-
+          docker build --tag "anyasnif/log-output:$GITHUB_SHA" .
+          docker push "anyasnif/log-output:$GITHUB_SHA"
+
+      - name: Set up Kustomize
+        uses: imranismail/setup-kustomize@v3
+
+      - name: Switch to main for manifest update
+        run: |
+          git fetch origin main
+          git checkout -B main origin/main
+
+      - name: Update production image tag
+        working-directory: the_project/overlays/production
+        run: kustomize edit set image PROJECT/LOGOUTPUT=anyasnif/log-output:$GITHUB_SHA
+
+      - name: Commit and push updated manifest
+        uses: EndBug/add-and-commit@v10
+        with:
+          add: 'the_project/overlays/production/kustomization.yaml'
+          message: 'Deploy log-output ${{ github.sha }} to production (tag ${{ github.ref_name }})'
           pull: '--rebase --autostash'

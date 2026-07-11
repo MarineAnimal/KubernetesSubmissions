@@ -1,0 +1,23 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../k8s/deployment.yaml
+  - ../k8s/service.yaml
+  - ../k8s/ingress.yaml
+  - ../k8s/persistentvolumeclaim.yaml
+  - ../k8s/postgres.yaml
+  - ../k8s/nats.yaml
+  - ../k8s/deployment-broadcaster.yaml
+  - ../k8s/deployment-log-output.yaml
+  - ../k8s/service-log-output.yaml
+  - ../k8s/configmap-log-output.yaml
+
+# NOTE: db-secret.yaml and broadcaster-secret.yaml are intentionally NOT
+# listed here. Per the exercise instructions, secrets are applied manually
+# outside of ArgoCD/Kustomize management, once per namespace. See the
+# handover notes for the exact kubectl commands.
+#
+# NOTE: backup-sa.yaml and cronjob-backup.yaml are intentionally NOT listed
+# here either. Staging does not back up its database, so those two
+# resources are added only in overlays/production/kustomization.yaml.
