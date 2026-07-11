@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: log-output
-          image: europe-north1-docker.pkg.dev/dwk-gke-501611/dwk-gke/log-output:1.1
+          image: PROJECT/LOGOUTPUT
           ports:
             - containerPort: 3000
           env:
