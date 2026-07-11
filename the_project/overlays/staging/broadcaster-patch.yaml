@@ -10,3 +10,4 @@ spec:
           env:
             - name: WEBHOOK_URL
               value: ""
+              valueFrom: null
