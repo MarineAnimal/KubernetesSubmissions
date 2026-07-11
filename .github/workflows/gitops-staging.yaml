@@ -24,13 +24,10 @@ jobs:
               - 'the_project/package.json'
               - 'the_project/package-lock.json'
               - 'the_project/Dockerfile'
-              - 'the_project/base/deployment.yaml'
             broadcaster:
               - 'the_project/broadcaster/**'
-              - 'the_project/base/deployment-broadcaster.yaml'
             logoutput:
               - 'the_project/log-output/**'
-              - 'the_project/base/deployment-log-output.yaml'
 
   build-todo-app:
     needs: changes
@@ -98,17 +95,17 @@ jobs:
        needs.build-broadcaster.result == 'success' ||
        needs.build-log-output.result == 'success')
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - uses: actions/checkout@v4
         with:
+          repository: MarineAnimal/KubernetesSubmissions-config
           ref: main
+          token: ${{ secrets.CONFIG_REPO_TOKEN }}
 
       - uses: imranismail/setup-kustomize@v3
 
       - name: Update image tags for whichever apps built
-        working-directory: the_project/overlays/staging
+        working-directory: overlays/staging
         run: |
           if [ "${{ needs.build-todo-app.result }}" == "success" ]; then
             kustomize edit set image PROJECT/IMAGE=anyasnif/todo-app:${{ github.sha }}
@@ -123,7 +120,8 @@ jobs:
       - name: Commit and push updated manifest
         uses: EndBug/add-and-commit@v9
         with:
-          add: 'the_project/overlays/staging/kustomization.yaml'
+          add: 'overlays/staging/kustomization.yaml'
           message: 'Deploy ${{ github.sha }} to staging'
           default_author: github_actor
           pull: '--rebase --autostash'
+          github_token: ${{ secrets.CONFIG_REPO_TOKEN }}
