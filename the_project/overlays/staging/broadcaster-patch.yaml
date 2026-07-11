@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: broadcaster
 spec:
+  replicas: 2
   template:
     spec:
       containers:
