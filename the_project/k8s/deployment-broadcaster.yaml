@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: broadcaster
+  labels:
+    app: broadcaster
+spec:
+  # 6 replicas. All of them join the same NATS queue group, so each todo
+  # event is delivered to exactly ONE replica -> no duplicate messages.
+  replicas: 6
+  selector:
+    matchLabels:
+      app: broadcaster
+  template:
+    metadata:
+      labels:
+        app: broadcaster
+    spec:
+      containers:
+        - name: broadcaster
+          image: PROJECT/BROADCASTER
+          ports:
+            - containerPort: 3000
+          env:
+            - name: PORT
+              value: "3000"
+            - name: NATS_URL
+              value: nats://nats:4222
+            - name: NATS_SUBJECT
+              value: todos
+            - name: NATS_QUEUE_GROUP
+              value: broadcaster
+            - name: TARGET
+              value: discord
+            - name: WEBHOOK_URL
+              valueFrom:
+                secretKeyRef:
+                  name: broadcaster-secret
+                  key: WEBHOOK_URL
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 128Mi
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 3

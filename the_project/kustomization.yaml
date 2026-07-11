@@ -12,8 +12,14 @@ resources:
   - k8s/postgres.yaml
   - k8s/backup-sa.yaml
   - k8s/cronjob-backup.yaml
+  - k8s/nats.yaml
+  - k8s/broadcaster-secret.yaml
+  - k8s/deployment-broadcaster.yaml
 
 images:
   - name: PROJECT/IMAGE
     newName: europe-north1-docker.pkg.dev/dwk-gke-501611/dwk-gke/todo-app
-    newTag: "1.4"
+    newTag: "1.5"
+  - name: PROJECT/BROADCASTER
+    newName: europe-north1-docker.pkg.dev/dwk-gke-501611/dwk-gke/broadcaster
+    newTag: "1.0"

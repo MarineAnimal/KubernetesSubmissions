@@ -2,6 +2,7 @@ const express = require("express");
 const fs = require("fs");
 const path = require("path");
 const { Pool } = require("pg");
+const { connect, StringCodec } = require("nats");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -29,6 +30,56 @@ const pool = new Pool({
   password: process.env.POSTGRES_PASSWORD,
   database: process.env.POSTGRES_DB || "todo",
 });
+
+// --- NATS: publish an event whenever a todo is created or updated. ---
+// The broadcaster service subscribes to these and forwards them to an
+// external chat service. Publishing is best-effort: if NATS is briefly
+// unreachable the todo operation still succeeds (a missed message is fine,
+// per the exercise; only duplicates would be a problem).
+const NATS_URL = process.env.NATS_URL || "nats://nats:4222";
+const NATS_SUBJECT = process.env.NATS_SUBJECT || "todos";
+const sc = StringCodec();
+let natsConnection = null;
+
+async function connectNats() {
+  try {
+    natsConnection = await connect({
+      servers: NATS_URL,
+      name: "todo-app",
+      reconnect: true,
+      maxReconnectAttempts: -1,
+    });
+    console.log(`Connected to NATS at ${NATS_URL}`);
+
+    (async () => {
+      for await (const status of natsConnection.status()) {
+        console.log(`NATS status: ${status.type}`);
+      }
+    })().catch(() => {});
+  } catch (err) {
+    console.error("Could not connect to NATS, retrying in 5s:", err.message);
+    setTimeout(connectNats, 5000);
+  }
+}
+
+function publishTodoEvent(action, todo) {
+  if (!natsConnection) {
+    console.warn("NATS not connected, skipping event publish");
+    return;
+  }
+
+  try {
+    const payload = JSON.stringify({
+      action,
+      todo,
+      timestamp: new Date().toISOString(),
+    });
+    natsConnection.publish(NATS_SUBJECT, sc.encode(payload));
+    console.log(`Published "${action}" event to NATS`);
+  } catch (err) {
+    console.error("Failed to publish NATS event:", err.message);
+  }
+}
 
 async function ensureFreshImage() {
   let needsFetch = true;
@@ -145,7 +196,11 @@ async function getTodos() {
 }
 
 async function addTodoToDb(todo) {
-  await pool.query("INSERT INTO todos (text) VALUES ($1)", [todo]);
+  const result = await pool.query(
+    "INSERT INTO todos (text) VALUES ($1) RETURNING id, text, done",
+    [todo]
+  );
+  return result.rows[0];
 }
 
 async function setTodoDone(id, done) {
@@ -202,8 +257,9 @@ app.post("/add", async (req, res) => {
 
   if (todo && todo.trim().length > 0 && todo.length <= 140) {
     try {
-      await addTodoToDb(todo.trim());
+      const created = await addTodoToDb(todo.trim());
       console.log(`New todo created: ${todo.trim()}`);
+      publishTodoEvent("created", created);
     } catch (err) {
       console.error("Failed to save todo:", err.message);
     }
@@ -227,6 +283,7 @@ app.put("/todos/:id", async (req, res) => {
       return res.status(404).json({ error: "Todo not found" });
     }
 
+    publishTodoEvent("updated", updated);
     res.status(200).json(updated);
   } catch (err) {
     console.error("Failed to update todo:", err.message);
@@ -241,6 +298,7 @@ async function start() {
 
   await waitForDb();
   await ensureTable();
+  connectNats();
 }
 
 start().catch((err) => {
