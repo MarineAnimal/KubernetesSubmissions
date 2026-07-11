@@ -4,28 +4,28 @@ kind: Kustomization
 namespace: project
 
 resources:
-  - k8s/deployment.yaml
-  - k8s/service.yaml
-  - k8s/ingress.yaml
-  - k8s/persistentvolumeclaim.yaml
-  - k8s/db-secret.yaml
-  - k8s/postgres.yaml
-  - k8s/backup-sa.yaml
-  - k8s/cronjob-backup.yaml
-  - k8s/nats.yaml
-  - k8s/broadcaster-secret.yaml
-  - k8s/deployment-broadcaster.yaml
-  - k8s/deployment-log-output.yaml
-  - k8s/service-log-output.yaml
-  - k8s/configmap-log-output.yaml
+- k8s/deployment.yaml
+- k8s/service.yaml
+- k8s/ingress.yaml
+- k8s/persistentvolumeclaim.yaml
+- k8s/db-secret.yaml
+- k8s/postgres.yaml
+- k8s/backup-sa.yaml
+- k8s/cronjob-backup.yaml
+- k8s/nats.yaml
+- k8s/broadcaster-secret.yaml
+- k8s/deployment-broadcaster.yaml
+- k8s/deployment-log-output.yaml
+- k8s/service-log-output.yaml
+- k8s/configmap-log-output.yaml
 
 images:
-  - name: PROJECT/IMAGE
-    newName: anyasnif/todo-app
-    newTag: latest
-  - name: PROJECT/BROADCASTER
-    newName: anyasnif/broadcaster
-    newTag: latest
-  - name: PROJECT/LOGOUTPUT
-    newName: anyasnif/log-output
-    newTag: 922302154ce0f35c51739c0bd7db539b54898f09
+- name: PROJECT/BROADCASTER
+  newName: anyasnif/broadcaster
+  newTag: latest
+- name: PROJECT/IMAGE
+  newName: anyasnif/todo-app
+  newTag: 2a6331d88a517fa2dc28b7d5586607f77002bdf0
+- name: PROJECT/LOGOUTPUT
+  newName: anyasnif/log-output
+  newTag: 922302154ce0f35c51739c0bd7db539b54898f09
