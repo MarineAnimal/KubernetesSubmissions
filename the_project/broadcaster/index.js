@@ -164,3 +164,5 @@ subscribe().catch((err) => {
   console.error("Fatal broadcaster error:", err.message);
   process.exit(1);
 });
+
+// gitops trigger
