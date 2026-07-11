@@ -1,4 +1,3 @@
-// verifying 4.10 config-repo split
 const express = require("express");
 const fs = require("fs");
 const path = require("path");
