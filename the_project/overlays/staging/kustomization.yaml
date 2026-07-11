@@ -18,4 +18,4 @@ images:
   newTag: latest
 - name: PROJECT/LOGOUTPUT
   newName: anyasnif/log-output
-  newTag: latest
+  newTag: a1074bd7b2323dfcad3cca562df2974932ca2e94
