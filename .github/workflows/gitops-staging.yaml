@@ -24,13 +24,13 @@ jobs:
               - 'the_project/package.json'
               - 'the_project/package-lock.json'
               - 'the_project/Dockerfile'
-              - 'the_project/k8s/deployment.yaml'
+              - 'the_project/base/deployment.yaml'
             broadcaster:
               - 'the_project/broadcaster/**'
-              - 'the_project/k8s/deployment-broadcaster.yaml'
+              - 'the_project/base/deployment-broadcaster.yaml'
             logoutput:
               - 'the_project/log-output/**'
-              - 'the_project/k8s/deployment-log-output.yaml'
+              - 'the_project/base/deployment-log-output.yaml'
 
   build-todo-app:
     needs: changes

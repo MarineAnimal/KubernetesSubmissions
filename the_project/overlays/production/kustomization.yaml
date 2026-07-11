@@ -5,8 +5,8 @@ namespace: production
 
 resources:
   - ../../base
-  - ../../k8s/backup-sa.yaml
-  - ../../k8s/cronjob-backup.yaml
+  - backup-sa.yaml
+  - cronjob-backup.yaml
 
 images:
   - name: PROJECT/IMAGE
