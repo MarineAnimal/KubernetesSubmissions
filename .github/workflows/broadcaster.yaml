@@ -49,3 +49,4 @@ jobs:
           add: 'the_project/kustomization.yaml'
           message: 'Update broadcaster image to ${{ github.sha }}'
           default_author: github_actor
+          pull: '--rebase --autostash'
