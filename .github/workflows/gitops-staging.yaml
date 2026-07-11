@@ -1,0 +1,129 @@
+name: Staging GitOps
+
+on:
+  push:
+    branches: [main]
+    tags-ignore:
+      - '**'
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      todoapp: ${{ steps.filter.outputs.todoapp }}
+      broadcaster: ${{ steps.filter.outputs.broadcaster }}
+      logoutput: ${{ steps.filter.outputs.logoutput }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            todoapp:
+              - 'the_project/index.js'
+              - 'the_project/package.json'
+              - 'the_project/package-lock.json'
+              - 'the_project/Dockerfile'
+              - 'the_project/k8s/deployment.yaml'
+            broadcaster:
+              - 'the_project/broadcaster/**'
+              - 'the_project/k8s/deployment-broadcaster.yaml'
+            logoutput:
+              - 'the_project/log-output/**'
+              - 'the_project/k8s/deployment-log-output.yaml'
+
+  build-todo-app:
+    needs: changes
+    if: needs.changes.outputs.todoapp == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/build-push-action@v6
+        with:
+          context: ./the_project
+          file: ./the_project/Dockerfile
+          push: true
+          tags: anyasnif/todo-app:${{ github.sha }}
+
+  build-broadcaster:
+    needs: changes
+    if: needs.changes.outputs.broadcaster == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/build-push-action@v6
+        with:
+          context: ./the_project/broadcaster
+          file: ./the_project/broadcaster/Dockerfile
+          push: true
+          tags: anyasnif/broadcaster:${{ github.sha }}
+
+  build-log-output:
+    needs: changes
+    if: needs.changes.outputs.logoutput == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: docker/login-action@v4
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build and publish log-output
+        working-directory: the_project/log-output
+        run: |-
+          docker build --tag "anyasnif/log-output:$GITHUB_SHA" .
+          docker push "anyasnif/log-output:$GITHUB_SHA"
+
+  update-staging-manifest:
+    needs: [changes, build-todo-app, build-broadcaster, build-log-output]
+    if: |
+      always() &&
+      (needs.build-todo-app.result == 'success' ||
+       needs.build-broadcaster.result == 'success' ||
+       needs.build-log-output.result == 'success')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: imranismail/setup-kustomize@v3
+
+      - name: Update image tags for whichever apps built
+        working-directory: the_project/overlays/staging
+        run: |
+          if [ "${{ needs.build-todo-app.result }}" == "success" ]; then
+            kustomize edit set image PROJECT/IMAGE=anyasnif/todo-app:${{ github.sha }}
+          fi
+          if [ "${{ needs.build-broadcaster.result }}" == "success" ]; then
+            kustomize edit set image PROJECT/BROADCASTER=anyasnif/broadcaster:${{ github.sha }}
+          fi
+          if [ "${{ needs.build-log-output.result }}" == "success" ]; then
+            kustomize edit set image PROJECT/LOGOUTPUT=anyasnif/log-output:${{ github.sha }}
+          fi
+
+      - name: Commit and push updated manifest
+        uses: EndBug/add-and-commit@v9
+        with:
+          add: 'the_project/overlays/staging/kustomization.yaml'
+          message: 'Deploy ${{ github.sha }} to staging'
+          default_author: github_actor
+          pull: '--rebase --autostash'
