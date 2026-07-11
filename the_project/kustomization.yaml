@@ -22,7 +22,7 @@ resources:
 images:
 - name: PROJECT/BROADCASTER
   newName: anyasnif/broadcaster
-  newTag: latest
+  newTag: 815c031432fabd77ddb40da975fdc41f3fbacf10
 - name: PROJECT/IMAGE
   newName: anyasnif/todo-app
   newTag: 815c031432fabd77ddb40da975fdc41f3fbacf10
