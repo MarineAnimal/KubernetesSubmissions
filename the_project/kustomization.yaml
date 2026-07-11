@@ -25,4 +25,4 @@ images:
   newTag: "1.5"
 - name: PROJECT/LOGOUTPUT
   newName: anyasnif/log-output
-  newTag: b319d9dfd217a28b88ee27479ef6803615a1cef5
+  newTag: 922302154ce0f35c51739c0bd7db539b54898f09
