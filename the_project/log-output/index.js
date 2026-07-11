@@ -87,3 +87,4 @@ app.listen(PORT, () => {
 pollPingpong();
 
 //hope this works
+//well it did not, since i did not add permissions, but now should!
