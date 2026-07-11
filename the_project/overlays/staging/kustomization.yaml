@@ -12,10 +12,10 @@ patches:
 images:
 - name: PROJECT/BROADCASTER
   newName: anyasnif/broadcaster
-  newTag: a1074bd7b2323dfcad3cca562df2974932ca2e94
+  newTag: 931b20c32229ebde2c6e48be4aeb36fb838a4ecb
 - name: PROJECT/IMAGE
   newName: anyasnif/todo-app
-  newTag: latest
+  newTag: 931b20c32229ebde2c6e48be4aeb36fb838a4ecb
 - name: PROJECT/LOGOUTPUT
   newName: anyasnif/log-output
-  newTag: a1074bd7b2323dfcad3cca562df2974932ca2e94
+  newTag: 931b20c32229ebde2c6e48be4aeb36fb838a4ecb
