@@ -26,7 +26,7 @@ let pingpongReachable = false;
 async function pollPingpong() {
   while (true) {
     try {
-      const response = await fetch("http://pingpong-svc/pongs");
+      const response = await fetch("http://pingpong-svc.exercises.svc.cluster.local/pongs");
       pingpongReachable = response.ok;
     } catch (err) {
       pingpongReachable = false;
@@ -57,7 +57,7 @@ app.get("/log", async (req, res) => {
   try {
     // "pingpong-svc" is the ping-pong app's Service name, resolvable via
     // Kubernetes' internal DNS from any pod in the cluster.
-    const response = await fetch("http://pingpong-svc/pongs");
+    const response = await fetch("http://pingpong-svc.exercises.svc.cluster.local/pongs");
     pongCount = await response.text();
   } catch (err) {
     console.error("Failed to reach ping-pong app:", err.message);
