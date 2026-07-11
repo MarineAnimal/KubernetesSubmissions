@@ -18,8 +18,8 @@ resources:
 
 images:
   - name: PROJECT/IMAGE
-    newName: europe-north1-docker.pkg.dev/dwk-gke-501611/dwk-gke/todo-app
-    newTag: "1.5"
+    newName: anyasnif/todo-app
+    newTag: latest
   - name: PROJECT/BROADCASTER
-    newName: europe-north1-docker.pkg.dev/dwk-gke-501611/dwk-gke/broadcaster
-    newTag: "1.0"
+    newName: anyasnif/broadcaster
+    newTag: latest
