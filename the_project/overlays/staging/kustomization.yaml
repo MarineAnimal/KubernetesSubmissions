@@ -4,18 +4,18 @@ kind: Kustomization
 namespace: staging
 
 resources:
-  - ../../base
+- ../../base
 
 patches:
-  - path: broadcaster-patch.yaml
+- path: broadcaster-patch.yaml
 
 images:
-  - name: PROJECT/IMAGE
-    newName: anyasnif/todo-app
-    newTag: latest
-  - name: PROJECT/BROADCASTER
-    newName: anyasnif/broadcaster
-    newTag: latest
-  - name: PROJECT/LOGOUTPUT
-    newName: anyasnif/log-output
-    newTag: latest
+- name: PROJECT/BROADCASTER
+  newName: anyasnif/broadcaster
+  newTag: 84955d7127e8c898ce8f2b0bf327e2dffd63b594
+- name: PROJECT/IMAGE
+  newName: anyasnif/todo-app
+  newTag: latest
+- name: PROJECT/LOGOUTPUT
+  newName: anyasnif/log-output
+  newTag: latest
