@@ -2,27 +2,27 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: project
 resources:
-  - k8s/deployment.yaml
-  - k8s/service.yaml
-  - k8s/ingress.yaml
-  - k8s/persistentvolumeclaim.yaml
-  - k8s/db-secret.yaml
-  - k8s/postgres.yaml
-  - k8s/backup-sa.yaml
-  - k8s/cronjob-backup.yaml
-  - k8s/nats.yaml
-  - k8s/broadcaster-secret.yaml
-  - k8s/deployment-broadcaster.yaml
-  - k8s/deployment-log-output.yaml
-  - k8s/service-log-output.yaml
-  - k8s/configmap-log-output.yaml
+- k8s/deployment.yaml
+- k8s/service.yaml
+- k8s/ingress.yaml
+- k8s/persistentvolumeclaim.yaml
+- k8s/db-secret.yaml
+- k8s/postgres.yaml
+- k8s/backup-sa.yaml
+- k8s/cronjob-backup.yaml
+- k8s/nats.yaml
+- k8s/broadcaster-secret.yaml
+- k8s/deployment-broadcaster.yaml
+- k8s/deployment-log-output.yaml
+- k8s/service-log-output.yaml
+- k8s/configmap-log-output.yaml
 images:
-  - name: PROJECT/IMAGE
-    newName: europe-north1-docker.pkg.dev/dwk-gke-501611/dwk-gke/todo-app
-    newTag: "1.5"
-  - name: PROJECT/BROADCASTER
-    newName: europe-north1-docker.pkg.dev/dwk-gke-501611/dwk-gke/broadcaster
-    newTag: "1.0"
-  - name: PROJECT/LOGOUTPUT
-    newName: anyasnif/log-output
-    newTag: "1"
+- name: PROJECT/BROADCASTER
+  newName: europe-north1-docker.pkg.dev/dwk-gke-501611/dwk-gke/broadcaster
+  newTag: "1.0"
+- name: PROJECT/IMAGE
+  newName: europe-north1-docker.pkg.dev/dwk-gke-501611/dwk-gke/todo-app
+  newTag: "1.5"
+- name: PROJECT/LOGOUTPUT
+  newName: anyasnif/log-output
+  newTag: b319d9dfd217a28b88ee27479ef6803615a1cef5
