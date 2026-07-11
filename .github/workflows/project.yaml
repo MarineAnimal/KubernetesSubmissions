@@ -3,6 +3,8 @@ name: Project (todo-app) GitOps
 on:
   push:
     branches: [main]
+    tags-ignore:
+      - '**'
     paths:
       - 'the_project/index.js'
       - 'the_project/package.json'

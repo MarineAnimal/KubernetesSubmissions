@@ -3,6 +3,8 @@ name: Broadcaster GitOps
 on:
   push:
     branches: [main]
+    tags-ignore:
+      - '**'
     paths:
       - 'the_project/broadcaster/**'
       - 'the_project/k8s/deployment-broadcaster.yaml'
