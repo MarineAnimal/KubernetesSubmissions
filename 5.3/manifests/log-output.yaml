@@ -1,0 +1,39 @@
+# Log-output app: calls http://greeter-svc/ and shows the greeting.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: log-output
+  namespace: default
+  labels:
+    app: log-output
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: log-output
+  template:
+    metadata:
+      labels:
+        app: log-output
+    spec:
+      containers:
+        - name: log-output
+          image: log-output-53:1
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: GREETER_URL
+              value: "http://greeter-svc/"
+          ports:
+            - containerPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: log-output-svc
+  namespace: default
+spec:
+  selector:
+    app: log-output
+  ports:
+    - port: 80
+      targetPort: 3000

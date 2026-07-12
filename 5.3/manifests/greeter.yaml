@@ -1,0 +1,107 @@
+# Two greeter Deployments from ONE image (greeter:1). They differ only in the
+# GREETING/VERSION env and the `version` label, so Kiali can tell them apart.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: greeter-v1
+  namespace: default
+  labels:
+    app: greeter
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: greeter
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: greeter
+        version: v1
+    spec:
+      containers:
+        - name: greeter
+          image: greeter:1
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: GREETING
+              value: "Hello"
+            - name: VERSION
+              value: "v1"
+          ports:
+            - containerPort: 3000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: greeter-v2
+  namespace: default
+  labels:
+    app: greeter
+    version: v2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: greeter
+      version: v2
+  template:
+    metadata:
+      labels:
+        app: greeter
+        version: v2
+    spec:
+      containers:
+        - name: greeter
+          image: greeter:1
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: GREETING
+              value: "Hola"
+            - name: VERSION
+              value: "v2"
+          ports:
+            - containerPort: 3000
+---
+# Stable name the log app calls. The HTTPRoute is attached to THIS Service and
+# splits traffic to the per-version Services below.
+apiVersion: v1
+kind: Service
+metadata:
+  name: greeter-svc
+  namespace: default
+spec:
+  selector:
+    app: greeter
+  ports:
+    - port: 80
+      targetPort: 3000
+---
+# Selects only v1 pods — HTTPRoute backend (weight 75).
+apiVersion: v1
+kind: Service
+metadata:
+  name: greeter-svc-1
+  namespace: default
+spec:
+  selector:
+    app: greeter
+    version: v1
+  ports:
+    - port: 80
+      targetPort: 3000
+---
+# Selects only v2 pods — HTTPRoute backend (weight 25).
+apiVersion: v1
+kind: Service
+metadata:
+  name: greeter-svc-2
+  namespace: default
+spec:
+  selector:
+    app: greeter
+    version: v2
+  ports:
+    - port: 80
+      targetPort: 3000
