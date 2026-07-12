@@ -1,0 +1,40 @@
+# Log-output stays a normal Deployment; only ping-pong is serverless. It polls
+# the serverless ping-pong via its fully qualified DNS name and displays the pong.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: log-output
+  namespace: exercises
+  labels:
+    app: log-output
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: log-output
+  template:
+    metadata:
+      labels:
+        app: log-output
+    spec:
+      containers:
+        - name: log-output
+          image: dev.local/log-output-57:1
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: PINGPONG_URL
+              value: "http://pingpong.exercises.svc.cluster.local/pingpong"
+          ports:
+            - containerPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: log-output-svc
+  namespace: exercises
+spec:
+  selector:
+    app: log-output
+  ports:
+    - port: 80
+      targetPort: 3000

@@ -1,0 +1,28 @@
+# Ping-pong deployed as a Knative Service (serverless) — this is the point of 5.7.
+# Knative gives it a cluster-local Service "pingpong" in ns "exercises", which the
+# log-output app reaches at http://pingpong.exercises.svc.cluster.local/pingpong.
+#
+# The image is tagged dev.local/* and imported into k3d (`k3d image import`).
+# dev.local is in Knative's registries-skipping-tag-resolving list, so Knative
+# does NOT try to resolve the tag to a digest against a registry (which would fail
+# for a locally-built image).
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: pingpong
+  namespace: exercises
+spec:
+  template:
+    metadata:
+      annotations:
+        # Keep one instance warm. The counter lives in memory, so scaling to
+        # zero would reset it and cold starts would return empty 503s to the
+        # log-output poller. min-scale 1 keeps the revision (and its counter)
+        # alive while still being a Knative-managed serverless service that
+        # scales UP under load.
+        autoscaling.knative.dev/min-scale: "1"
+    spec:
+      containers:
+        - image: dev.local/pingpong-57:1
+          ports:
+            - containerPort: 3000
