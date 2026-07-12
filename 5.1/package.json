@@ -1,0 +1,16 @@
+{
+  "name": "dummysite-operator",
+  "version": "1.0.0",
+  "description": "Kubernetes controller that serves an HTML copy of a website described by a DummySite custom resource",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@kubernetes/client-node": "^1.0.0"
+  }
+}

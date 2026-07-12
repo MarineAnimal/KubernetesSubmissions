@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: dummysite-operator
+  namespace: default
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: dummysite-operator
+rules:
+  # Watch and read the custom resources we manage.
+  - apiGroups: ["dummysite.example.com"]
+    resources: ["dummysites"]
+    verbs: ["get", "list", "watch"]
+  # Manage the child Deployments that fetch and serve each site.
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  # Manage the child Services that expose each site.
+  - apiGroups: [""]
+    resources: ["services"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: dummysite-operator
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: dummysite-operator
+subjects:
+  - kind: ServiceAccount
+    name: dummysite-operator
+    namespace: default
