@@ -1,13 +1,13 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: todo-app-ingress
+  name: main-ingress
 spec:
   ingressClassName: nginx
   rules:
     - http:
         paths:
-          - path: /todo
+          - path: /
             pathType: Prefix
             backend:
               service:

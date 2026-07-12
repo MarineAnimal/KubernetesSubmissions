@@ -17,10 +17,19 @@ spec:
           image: todo-app:1.0
           ports:
             - containerPort: 3000
-
+          env:
+            - name: PORT
+              value: "3000"
+          volumeMounts:
+            - name: image-storage
+              mountPath: /usr/src/app/files
           readinessProbe:
             httpGet:
-              path: /todo
+              path: /
               port: 3000
             initialDelaySeconds: 5
             periodSeconds: 5
+      volumes:
+        - name: image-storage
+          persistentVolumeClaim:
+            claimName: project-image-pvc
