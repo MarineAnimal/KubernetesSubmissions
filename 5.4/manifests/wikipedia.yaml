@@ -1,0 +1,80 @@
+# Wikipedia server: one Pod, three containers sharing an emptyDir at nginx's
+# web root. No service mesh needed for this exercise.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wikipedia
+  namespace: default
+  labels:
+    app: wikipedia
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wikipedia
+  template:
+    metadata:
+      labels:
+        app: wikipedia
+    spec:
+      volumes:
+        # Shared scratch dir: init/sidecar write index.html, nginx serves it.
+        - name: www
+          emptyDir: {}
+      initContainers:
+        # Plain init container: fetch the Kubernetes article ONCE at startup so
+        # the site has content before nginx starts.
+        - name: fetch-initial
+          image: curlimages/curl:8.11.0
+          command:
+            - sh
+            - -c
+            - "curl -sL https://en.wikipedia.org/wiki/Kubernetes -o /www/index.html"
+          volumeMounts:
+            - name: www
+              mountPath: /www
+        # Native sidecar (initContainer + restartPolicy: Always): runs for the
+        # whole Pod lifetime. Every 5-15 min it overwrites index.html with a
+        # random article. awk gives a portable random int (busybox has no $RANDOM
+        # guarantee); range 300-900s = 5-15 min.
+        - name: refresher
+          image: curlimages/curl:8.11.0
+          restartPolicy: Always
+          command:
+            - sh
+            - -c
+            - |
+              while true; do
+                SECS=$(awk 'BEGIN{srand(); print int(300 + rand()*601)}')
+                echo "refresher: sleeping ${SECS}s (~$((SECS/60)) min) before next random article"
+                sleep "$SECS"
+                if curl -sL https://en.wikipedia.org/wiki/Special:Random -o /www/index.html; then
+                  echo "refresher: fetched a random article at $(date -u)"
+                else
+                  echo "refresher: fetch failed at $(date -u)"
+                fi
+              done
+          volumeMounts:
+            - name: www
+              mountPath: /www
+      containers:
+        # Main container: serves whatever is in the shared www dir.
+        - name: nginx
+          image: nginx:1.27-alpine
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: www
+              mountPath: /usr/share/nginx/html
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wikipedia-svc
+  namespace: default
+spec:
+  selector:
+    app: wikipedia
+  ports:
+    - port: 80
+      targetPort: 80
