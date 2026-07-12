@@ -1,34 +1,17 @@
-\# Note on commit authorship
+# Note on commit authorship
 
+The commits in this repository were originally recorded under an incorrect
+author identity. My partner and I share a PC (we live together), and the
+machine's global git config defaulted to his identity (Jaakko), so some
+commits were attributed to him, and others to my own GitHub account under an
+older name, rather than to me.
 
+My GitHub account is **MarineAnimal** (linked to annam.finland@gmail.com), and
+it pushed every commit in this repository. On July 12, 2026 I corrected the
+author metadata across the repository's entire history so that all commits are
+now attributed to **Anna Makarevich <annam.finland@gmail.com>**, and I set my
+local git config so future commits are recorded correctly as well.
 
-Some commits in this repository show the author name/email of my partner
+I first noticed the misconfiguration while working on exercise 4.7 (ArgoCD).
 
-(Jaakko) rather than my own. We share a PC since we live together, and the machine's global git
-
-configuration was set to his identity by default.
-
-
-
-My GitHub account, \*\*MarineAnimal\*\* (linked to annam.finland@gmail.com),
-
-is the account used to push every commit in this repository. The commit
-
-metadata (name/email) just hadn't been corrected to reflect that until
-
-July 11, 2026.
-
-
-
-Git is now configured locally with my correct name and email, so all
-
-commits from this date forward are attributed correctly.
-
-
-
-i noticed this when i was working on 4.7, on argo
-
-
-
-\-Anna Makarevich
-
+Anna Makarevich
