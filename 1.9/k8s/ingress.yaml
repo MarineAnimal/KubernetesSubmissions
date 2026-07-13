@@ -7,10 +7,19 @@ spec:
   rules:
   - http:
       paths:
+      # Ping-pong app: requests to /pingpong go here (it listens on /pingpong).
       - path: /pingpong
         pathType: Prefix
         backend:
           service:
             name: pingpong-svc
+            port:
+              number: 80
+      # Log output app shares this same Ingress: everything else goes here.
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: log-output-svc
             port:
               number: 80
