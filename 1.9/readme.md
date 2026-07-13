@@ -3,8 +3,8 @@
 Ping-pong and Log-output run as two separate deployments, both exposed through a
 single Ingress that splits by path:
 
-- `/pingpong` → ping-pong app — replies `pong N`, incrementing on each request.
-- `/` → log-output app — HTML page with a timestamp + a startup random string.
+- `/pingpong` → ping-pong app: replies `pong N`, incrementing on each request.
+- `/` → log-output app: HTML page with a timestamp and a startup random string.
 
 ## Build & deploy
 
@@ -24,7 +24,3 @@ kubectl apply -f k8s/            # pingpong + log-output deployments, services, 
 curl http://<ingress>/pingpong            # pong 1, pong 2, pong 3 ...
 curl http://<ingress>/                    # log-output HTML (timestamp + random string)
 ```
-
-Note: this folder still carries two versions of the app source (`src/` express
-version and `pingpong/` http version) plus a stray `Dockerfile.txt` from
-earlier iterations — harmless, but a candidate for cleanup.
