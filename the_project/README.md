@@ -2,10 +2,10 @@
 
 ## Exercise releases
 
-- [3.7](https://github.com/MarineAnimal/KubernetesSubmissions/releases/tag/3.7) — the_project
-- [3.8](https://github.com/MarineAnimal/KubernetesSubmissions/releases/tag/3.8) — the_project
-- [3.9](https://github.com/MarineAnimal/KubernetesSubmissions/releases/tag/3.9) — the_project
-- [3.10](https://github.com/MarineAnimal/KubernetesSubmissions/releases/tag/3.10) — the_project
+- [3.7](https://github.com/MarineAnimal/KubernetesSubmissions/releases/tag/3.7), the_project
+- [3.8](https://github.com/MarineAnimal/KubernetesSubmissions/releases/tag/3.8), the_project
+- [3.9](https://github.com/MarineAnimal/KubernetesSubmissions/releases/tag/3.9), the_project
+- [3.10](https://github.com/MarineAnimal/KubernetesSubmissions/releases/tag/3.10), the_project
 
 ## 4.1 Readiness probe
 
@@ -15,13 +15,13 @@ apps something real to be "not ready" about.
 
 These files live alongside the todo app in this same folder, but are a
 **separate deployment in a separate namespace** (`exercises`, not
-`project`) — see the naming/collision notes below before touching
+`project`), see the naming/collision notes below before touching
 `kustomization.yaml`.
 
 ### What changed from 3.4
 
 - **pingpong** connects to a new `pingpong-postgres` StatefulSet (kept
-  separate from this project's own `todo-postgres` — different app,
+  separate from this project's own `todo-postgres`, different app,
   different DB, different namespace). It retries the DB connection in
   the background instead of blocking startup, so the container comes up
   immediately but reports not-ready via `/readyz` until the DB
@@ -52,7 +52,7 @@ in `kustomization.yaml`:
 - `pingpong-db-secret.yaml` (secret `pingpong-db-secret`)
 - `pingpong-postgres.yaml` (StatefulSet `pingpong-postgres`)
 
-Apply these with plain `kubectl apply -f`, not `kubectl apply -k` — mixing
+Apply these with plain `kubectl apply -f`, not `kubectl apply -k`, mixing
 them into the Kustomize setup would force them into the `project`
 namespace via the top-level `namespace: project` field, which doesn't
 match how they're actually deployed.

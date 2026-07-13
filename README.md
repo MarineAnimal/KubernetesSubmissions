@@ -26,9 +26,9 @@
 - [3.3.](https://github.com/MarineAnimal/KubernetesSubmissions/tree/3.3/3.3-to-the-gateway)
 - [3.4.](https://github.com/MarineAnimal/KubernetesSubmissions/tree/3.4/3.4-route-rewrite)
 - [3.5.](https://github.com/MarineAnimal/KubernetesSubmissions/tree/3.5/3.5-project-kustomize)
-- [3.6.](https://github.com/MarineAnimal/KubernetesSubmissions/tree/3.6/the_project)
-- [3.7.](https://github.com/MarineAnimal/KubernetesSubmissions/tree/3.7/the_project)
-- [3.8.](https://github.com/MarineAnimal/KubernetesSubmissions/tree/3.8/the_project)
+- [3.6.](https://github.com/MarineAnimal/KubernetesSubmissions/tree/3.6/.github/workflows) automatic deploy pipeline for the_project
+- [3.7.](https://github.com/MarineAnimal/KubernetesSubmissions/tree/3.7/.github/workflows) per branch deployment environments
+- [3.8.](https://github.com/MarineAnimal/KubernetesSubmissions/tree/3.8/.github/workflows) delete the namespace when a branch is deleted
 - [3.9.](https://github.com/MarineAnimal/KubernetesSubmissions/tree/3.9/the_project)
 - [3.10.](https://github.com/MarineAnimal/KubernetesSubmissions/tree/3.10/the_project)
 - [3.11.](https://github.com/MarineAnimal/KubernetesSubmissions/tree/3.11/the_project)

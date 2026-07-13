@@ -1,8 +1,8 @@
-# 1.11 Persisting data — ping-pong count on a shared volume
+# 1.11 Persisting data, ping-pong count on a shared volume
 
 Ping-pong and Log-output are now **two separate pods that share one
 PersistentVolume**. Ping-pong writes its counter to a file on the volume, and
-Log-output reads that same file — so the count survives pod restarts and is
+Log-output reads that same file, so the count survives pod restarts and is
 visible to the other app.
 
 - `GET /pingpong` → `pong N`. Increments the counter and writes it to

@@ -6,7 +6,7 @@ instead of matching `/pingpong` itself.
 
 - HTTPRoute `/pingpong` rule gains a `URLRewrite` filter → `ReplacePrefixMatch: /`.
 - The Ping-pong app is updated to respond at `/` accordingly (the rewrite is
-  transparent to the caller — they still hit `/pingpong`).
+  transparent to the caller, they still hit `/pingpong`).
 
 ## Deploy (PowerShell)
 
@@ -35,7 +35,7 @@ kubectl apply -f k8s/httproute.yaml
 
 ```powershell
 kubectl get gateway -n exercises          # wait for an ADDRESS
-curl.exe http://GATEWAY-IP/pingpong        # still returns "pong N" — rewrite is invisible to the caller
+curl.exe http://GATEWAY-IP/pingpong        # still returns "pong N", rewrite is invisible to the caller
 curl.exe http://GATEWAY-IP/log
 ```
 

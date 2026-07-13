@@ -1,4 +1,4 @@
-# 1.6 The project — expose with a NodePort Service
+# 1.6 The project, expose with a NodePort Service
 
 Same env-var todo-app as 1.5, now reachable from outside the cluster through a
 **NodePort** Service. The Service maps the node port `30080` → in-cluster port

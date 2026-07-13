@@ -36,5 +36,5 @@ count(kube_pod_info{namespace="monitoring", created_by_kind="StatefulSet"})
 **Result: `1`.**
 
 Only `prom-alertmanager-0` runs as a StatefulSet in this chart's default
-configuration — `prometheus-server` runs as a Deployment unless
+configuration, `prometheus-server` runs as a Deployment unless
 `server.statefulSet.enabled=true` is explicitly set.

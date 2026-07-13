@@ -5,7 +5,7 @@ pile of raw `kubectl apply -f` commands.
 
 `kustomization.yaml` bundles the manifests (namespace, deployment, service, ingress,
 PVC), pins everything to the `project` namespace, and swaps the deployment's
-`PROJECT/IMAGE` placeholder for the real Artifact Registry image + tag — so the
+`PROJECT/IMAGE` placeholder for the real Artifact Registry image + tag, so the
 deployment file itself stays image-agnostic.
 
 The app serves a todo list plus a random image that's cached on a PVC
@@ -29,7 +29,7 @@ kubectl get pods -n project
 kubectl get ingress -n project     # wait for an ADDRESS
 ```
 
-Open `http://INGRESS-IP/` in a browser — you should see the todo list and a cached
+Open `http://INGRESS-IP/` in a browser, you should see the todo list and a cached
 random image.
 
 ## Cleanup (save credits)

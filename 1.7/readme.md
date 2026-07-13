@@ -1,4 +1,4 @@
-# 1.7 Log output — HTTP endpoint behind an Ingress
+# 1.7 Log output, HTTP endpoint behind an Ingress
 
 The "Log output" app now serves over HTTP instead of only logging to stdout.
 `GET /` returns a small HTML page with the current timestamp and the random

@@ -12,11 +12,11 @@ The main difference is that with Dbaas in this case, google handles most of the 
 3. Version, HA topology (single zone vs regional), and storage type are simple dropdown choices.
 
 **DIY, self-hosted in the cluster**
-1. Requires writing and maintaining the Deployment/StatefulSet, Service, PVC, Secret (for credentials), and often a ConfigMap for the database configuration file — several manifests to get right versus none.
+1. Requires writing and maintaining the Deployment/StatefulSet, Service, PVC, Secret (for credentials), and often a ConfigMap for the database configuration file, several manifests to get right versus none.
 2. Choosing the right access mode (`ReadWriteOnce` typically, since most databases don't support concurrent writers) and StorageClass is on the user.
-3. Achieving high availability (replication, failover) is significantly more work — this usually means adopting a Kubernetes Operator (e.g. Zalando's Postgres Operator, CloudNativePG) rather than a bare Deployment, which adds another moving part to learn and trust.
+3. Achieving high availability (replication, failover) is significantly more work, this usually means adopting a Kubernetes Operator (e.g. Zalando's Postgres Operator, CloudNativePG) rather than a bare Deployment, which adds another moving part to learn and trust.
 
-**Verdict!:** DBaaS wins clearly on time-to-first-database. DIY's setup cost is proportional to how much reliability you want — a single-pod database is nearly as fast to stand up as Cloud SQL, but a genuinely production-grade HA setup takes significant amount of time and engineering effort.
+**Verdict!:** DBaaS wins clearly on time-to-first-database. DIY's setup cost is proportional to how much reliability you want, a single-pod database is nearly as fast to stand up as Cloud SQL, but a genuinely production-grade HA setup takes significant amount of time and engineering effort.
 
 
 ### Ongoing maintenance
@@ -37,7 +37,7 @@ The main difference is that with Dbaas in this case, google handles most of the 
 
 **DBaaS**
 1. Automated daily backups and point-in-time recovery are built-in features, enabled with a checkbox and a retention period.
-2. Restoring is a single `gcloud sql backups restore` command or a console click — no manual dump/restore scripting required.
+2. Restoring is a single `gcloud sql backups restore` command or a console click, no manual dump/restore scripting required.
 
 **DIY**
 1. One has to manually take care of backups. This is typically a CronJob that runs `pg_dump` or smth similar and pushes the result to a Cloud Storage bucket.
