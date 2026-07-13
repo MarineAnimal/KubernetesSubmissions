@@ -15,9 +15,11 @@ kubectl apply -f k8s/deployment.yaml
 
 The image uses `imagePullPolicy: Never`, so build it locally first (and load it
 into the cluster node if you're on kind / docker-desktop). this can be done:
+```bash
   docker save todo-app:1.2 -o todo-app-1.2.tar
   docker cp todo-app-1.2.tar desktop-control-plane:/todo-app-1.2.tar
   docker exec desktop-control-plane ctr -n k8s.io images import /todo-app-1.2.tar
+```
 
 ## Test
 
