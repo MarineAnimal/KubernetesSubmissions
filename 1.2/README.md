@@ -22,9 +22,12 @@ into the cluster node if you're on kind / docker-desktop). this can be done:
 ```
 
 ## Test
-
 ```bash
 kubectl get pods                          # todo-app Running
+kubectl logs deploy/todo-app                  # "Server started in port 3000"
+kubectl exec deploy/todo-app -- printenv PORT # 3000
 kubectl port-forward deploy/todo-app 3000:3000
 curl localhost:3000                       # the "app is running" message
 ```
+
+
