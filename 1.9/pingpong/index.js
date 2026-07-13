@@ -4,10 +4,9 @@ let counter = 0;
 
 const server = http.createServer((req, res) => {
   if (req.url === "/pingpong") {
-    counter = counter + 1;
-
     res.writeHead(200, { "Content-Type": "text/plain" })
     res.end("pong " + counter)
+    counter = counter + 1;
     return;
   }
 
