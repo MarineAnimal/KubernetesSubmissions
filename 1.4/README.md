@@ -1,4 +1,4 @@
-# 1.4 The project — deployment iteration
+# 1.4 The project, deployment iteration
 
 Another pass at the todo-app Deployment. The app is still a minimal Node HTTP
 server that responds "Todo app running" to any request; the point here is the
