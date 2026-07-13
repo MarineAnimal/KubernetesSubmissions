@@ -7,6 +7,15 @@
 - [3.9](https://github.com/MarineAnimal/KubernetesSubmissions/releases/tag/3.9), the_project
 - [3.10](https://github.com/MarineAnimal/KubernetesSubmissions/releases/tag/3.10), the_project
 
+## CI/CD, automatic deployment (3.6 to 3.8)
+
+The project is deployed automatically by GitHub Actions. The pipeline lives in
+[.github/workflows](../.github/workflows):
+
+- `main.yaml` builds and deploys the project on every push to a branch, each branch
+  into its own namespace (3.6, 3.7).
+- `cleanup.yaml` deletes a branch's namespace when that branch is deleted (3.8).
+
 ## 4.1 Readiness probe
 
 Builds on 3.4 (Gateway API route rewrite). Ping-pong now persists its
