@@ -1,4 +1,4 @@
-# 1.3 Log output — declarative deploy + first release
+# 1.3 Log output, declarative deploy & first release
 
 The "Log output" application: on startup it picks a random UUID, then prints
 that UUID plus the current timestamp to stdout every 5 seconds. There's no HTTP
