@@ -3,14 +3,17 @@
 The todo-app now reads two values from the environment (`DEMO_GREETING` and
 `DEMO_FAREWELL`) and renders them in a small HTML page, instead of having the
 text hard-coded. The values are set in the Deployment manifest, so you can
-change what the page says without rebuilding the image. Some of the changes are part of my final auditing, (checking my exercises)
+change what the page says without rebuilding the image.
 
 ## Build & deploy
 
 ```bash
-docker build -t todo-app:1.2 .
+docker build -t todo-app:1.5 .
 kubectl apply -f k8s/deployment.yaml
 ```
+
+The image uses `imagePullPolicy: Never`, so build it locally first (and load it
+into the cluster node if you are on kind / docker-desktop).
 
 ## Test
 
