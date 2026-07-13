@@ -1,4 +1,4 @@
-# Exercise 5.5 — Platform comparison: Rancher vs OpenShift
+# Exercise 5.5, Platform comparison: Rancher vs OpenShift
 
 Comparing two production-ready Kubernetes distributions/platforms.
 

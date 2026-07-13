@@ -16,11 +16,11 @@ Landscape: https://landscape.cncf.io/
 2. **Docker**  built and ran all container images (`docker build`); the DevOps with
    Docker prerequisite; Docker Desktop also hosted a local cluster in part 5.
 3. **Helm**  installed Prometheus / Kiali and other charts (part 2; part 5).
-4. **k3s** (Rancher) — the lightweight Kubernetes distro behind my k3d cluster
+4. **k3s** (Rancher), the lightweight Kubernetes distro behind my k3d cluster
    (parts 5.6–5.7).
-5. **Google Kubernetes Engine (GKE)** — the cloud cluster used in parts 3–4.
+5. **Google Kubernetes Engine (GKE)**, the cloud cluster used in parts 3–4.
 6. **Google Cloud**  the cloud platform hosting GKE (parts 3–4).
-7. **NGINX** — the ingress controller that routed `/log` and `/pingpong`
+7. **NGINX**, the ingress controller that routed `/log` and `/pingpong`
    in chapters 1–2 (my Ingress manifests use `ingressClassName: nginx`).
 8. **PostgreSQL**  the project's database, ping-pong counter (part 4).
 9. **NATS**  messaging between the backend and the broadcaster (part 4).

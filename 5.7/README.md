@@ -1,4 +1,4 @@
-# Exercise 5.7 — Deploy to serverless (Ping-pong as a Knative Service)
+# Exercise 5.7, Deploy to serverless (Ping-pong as a Knative Service)
 
 Makes the **ping-pong** service of the Log Output app **serverless**: ping-pong is
 deployed as a **Knative Service** (ksvc) in the `exercises` namespace, and the
@@ -8,10 +8,10 @@ Runs on the **k3d + Knative** cluster set up in [5.6](../5.6/README.md).
 
 ## Components
 
-- **ping-pong** (`pingpong/`) — the simple in-memory counter app (same as
+- **ping-pong** (`pingpong/`), the simple in-memory counter app (same as
   `3.1-pingpong-gke`): `GET /pingpong` → `pong N`. Deployed as a **Knative
   Service** (`manifests/pingpong-ksvc.yaml`).
-- **log-output** (`log-output/`) — a normal Deployment. Polls ping-pong every 3s
+- **log-output** (`log-output/`), a normal Deployment. Polls ping-pong every 3s
   and shows the pong at `/` and in its log.
 
 ## Key details
@@ -26,7 +26,7 @@ exercise tip.)
 The ping-pong counter lives in memory. If the ksvc scaled to zero, every cold
 start would reset the counter (and briefly return empty 503s to the poller). The
 annotation `autoscaling.knative.dev/min-scale: "1"` keeps one instance warm, so
-the counter is stable — while ping-pong is still a Knative-managed service that
+the counter is stable, while ping-pong is still a Knative-managed service that
 scales **up** under load.
 
 ### Fresh connection per request (robustness)

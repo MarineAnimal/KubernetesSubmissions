@@ -1,4 +1,4 @@
-# Exercise 5.6 — Trying serverless (Knative Serving on k3d)
+# Exercise 5.6, Trying serverless (Knative Serving on k3d)
 
 Installs the **Knative Serving** component on a fresh **k3d** cluster (no Traefik,
 Kubernetes 1.34), with **Kourier** as the network layer and **Magic DNS (sslip.io)**,
@@ -30,7 +30,7 @@ kubectl apply -f https://github.com/knative/net-kourier/releases/download/$V/kou
 kubectl patch configmap/config-network -n knative-serving --type merge \
   -p '{"data":{"ingress-class":"kourier.ingress.networking.knative.dev"}}'
 
-# Magic DNS (sslip.io) — auto-sets config-domain to <clusterIP>.sslip.io
+# Magic DNS (sslip.io), auto-sets config-domain to <clusterIP>.sslip.io
 kubectl apply -f https://github.com/knative/serving/releases/download/$V/serving-default-domain.yaml
 ```
 
@@ -46,7 +46,7 @@ kubectl get pods -n kourier-system
 The exercise says pods (webhook / net-kourier-controller / controller) may
 `CrashLoopBackOff`. On this setup (k3d 5.9, k3s v1.34.1, Knative 1.22.1) they came
 up cleanly. The usual cause when it *does* happen is the node's **inotify limits**
-being too low — the crashing pod's logs show `too many open files`. Fix by raising
+being too low, the crashing pod's logs show `too many open files`. Fix by raising
 them on the host / in each k3d node, e.g.:
 
 ```bash
