@@ -1,4 +1,4 @@
-# Exercise 5.1 — DummySite operator
+# Exercise 5.1, DummySite operator
 
 A Kubernetes controller (operator) that watches a custom resource called
 **DummySite** and serves an HTML copy of the website named in its
@@ -62,7 +62,7 @@ The controller is **level-based and idempotent**:
   actually changed (tracked via an annotation), so re-running the loop never
   recreates or churns existing resources.
 * The watch reconnects automatically if the connection drops, and the periodic
-  loop recovers anything that was lost — so the controller heals from
+  loop recovers anything that was lost, so the controller heals from
   temporary failures.
 
 ### RBAC
