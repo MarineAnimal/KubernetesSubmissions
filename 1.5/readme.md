@@ -1,9 +1,9 @@
-# 1.5 The project — configuration via environment variables
+# 1.5 The project, configuration via environment variables
 
 The todo-app now reads two values from the environment (`DEMO_GREETING` and
 `DEMO_FAREWELL`) and renders them in a small HTML page, instead of having the
 text hard-coded. The values are set in the Deployment manifest, so you can
-change what the page says without rebuilding the image.
+change what the page says without rebuilding the image. Some of the changes are part of my final auditing, (checking my exercises)
 
 ## Build & deploy
 
