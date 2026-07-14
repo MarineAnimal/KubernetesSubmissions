@@ -16,6 +16,15 @@ The project is deployed automatically by GitHub Actions. The pipeline lives in
   into its own namespace (3.6, 3.7).
 - `cleanup.yaml` deletes a branch's namespace when that branch is deleted (3.8).
 
+## Configuration in a separate repo (4.7 to 4.10)
+
+From 4.7 the project moved to GitOps, and in 4.10 the Kubernetes configuration was
+split into its own repository. The app code stays here; all the manifests (the
+kustomize base, the staging and production overlays, NATS, postgres, broadcaster and
+log-output) live in the separate config repo,
+[KubernetesSubmissions-config](https://github.com/MarineAnimal/KubernetesSubmissions-config).
+ArgoCD syncs that repo to the cluster: main to staging, tags to production.
+
 ## 4.1 Readiness probe
 
 Builds on 3.4 (Gateway API route rewrite). Ping-pong now persists its
