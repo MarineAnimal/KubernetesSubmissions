@@ -8,7 +8,7 @@ project (the todo app) lives in [the_project](the_project). From chapter 4 onwar
 Kubernetes configuration is split into a separate GitOps repo,
 [KubernetesSubmissions-config](https://github.com/MarineAnimal/KubernetesSubmissions-config).
 
-## Chapter 1, the basics
+## Chapter 2, the basics
 
 - [1.1.](https://github.com/MarineAnimal/KubernetesSubmissions/tree/1.1/log_output)
 - [1.2.](https://github.com/MarineAnimal/KubernetesSubmissions/tree/1.2/1.2)
@@ -24,7 +24,7 @@ Kubernetes configuration is split into a separate GitOps repo,
 - [1.12.](https://github.com/MarineAnimal/KubernetesSubmissions/tree/1.12/1.12)
 - [1.13.](https://github.com/MarineAnimal/KubernetesSubmissions/tree/1.13/1.13)
 
-## Chapter 2, ConfigMaps, StatefulSets, monitoring
+## Chapter 3, ConfigMaps, StatefulSets, monitoring
 
 - [2.1.](https://github.com/MarineAnimal/KubernetesSubmissions/tree/2.1/2.1)
 - [2.2.](https://github.com/MarineAnimal/KubernetesSubmissions/tree/2.2/2.2)
@@ -37,7 +37,7 @@ Kubernetes configuration is split into a separate GitOps repo,
 - [2.9.](https://github.com/MarineAnimal/KubernetesSubmissions/tree/2.9/2.9)
 - [2.10.](https://github.com/MarineAnimal/KubernetesSubmissions/tree/2.10/2.10)
 
-## Chapter 3, GKE, Ingress, Gateway API, GitOps pipeline
+## Chapter 4, GKE, Ingress, Gateway API, GitOps pipeline
 
 - [3.1.](https://github.com/MarineAnimal/KubernetesSubmissions/tree/3.1/3.1-pingpong-gke)
 - [3.2.](https://github.com/MarineAnimal/KubernetesSubmissions/tree/3.2/3.2-log-output-pingpong-ingress)
@@ -52,7 +52,7 @@ Kubernetes configuration is split into a separate GitOps repo,
 - [3.11.](https://github.com/MarineAnimal/KubernetesSubmissions/tree/3.11/the_project) resource requests and limits
 - [3.12.](https://github.com/MarineAnimal/KubernetesSubmissions/tree/3.12/the_project) GKE monitoring, logs screenshot
 
-## Chapter 4, probes, monitoring, canary, messaging, GitOps
+## Chapter 5, probes, monitoring, canary, messaging, GitOps
 
 - [4.1.](https://github.com/MarineAnimal/KubernetesSubmissions/tree/4.1/the_project) readiness and liveness probes
 - [4.2.](https://github.com/MarineAnimal/KubernetesSubmissions/tree/4.2/the_project) liveness probe that restarts a broken pod
@@ -65,7 +65,7 @@ Kubernetes configuration is split into a separate GitOps repo,
 - [4.9.](https://github.com/MarineAnimal/KubernetesSubmissions/tree/4.9/the_project) staging and production split: [staging overlay](https://github.com/MarineAnimal/KubernetesSubmissions-config/tree/main/overlays/staging), [production overlay](https://github.com/MarineAnimal/KubernetesSubmissions-config/tree/main/overlays/production)
 - [4.10.](https://github.com/MarineAnimal/KubernetesSubmissions/tree/4.10/the_project) code and config in separate repos: [config repo](https://github.com/MarineAnimal/KubernetesSubmissions-config)
 
-## Chapter 5, operators, service mesh, serverless
+## Chapter 6, operators, service mesh, serverless
 
 - [5.1.](https://github.com/MarineAnimal/KubernetesSubmissions/tree/5.1/5.1) DIY CRD and controller, the DummySite operator
 - [5.2.](https://github.com/MarineAnimal/KubernetesSubmissions/tree/5.2/5.2) getting started with the Istio service mesh
